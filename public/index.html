@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rods Podcasts</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    
+    <!-- Plugins required on all pages NOTE: Additional non-required plugins are loaded ondemand as of AppStrap 2.5 -->
+    
+    <!-- Theme style -->
+    <link href="assets/css/theme-style.min.css" rel="stylesheet">
+    
+    <!-- Your custom override -->
+    <link href="assets/css/custom-style.css" rel="stylesheet">
+    
+    <!-- Optional: ICON SETS -->
+    <!-- Iconset: Font Awesome 5.0.4 via CDN -->
+    <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+    <!-- Iconset: flag icons - http://lipis.github.io/flag-icon-css/ -->
+    <link href="assets/plugins/flag-icon-css/css/flag-icon.min.css" rel="stylesheet">
+    <!-- Iconset: ionicons - http://ionicons.com/ -->
+    <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+    <!-- Iconset: Linearicons - https://linearicons.com/free -->
+    <link href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" rel="stylesheet">
+    
+    
+    <!-- Le fav and touch icons - @todo: fill with your icons or remove, try https://realfavicongenerator.net -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicons/manifest.json">
+    <link rel="shortcut icon" href="assets/favicons/favicon.ico">
+    <meta name="msapplication-config" content="assets/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    
+    
+    <!-- Google fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Rambla:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Calligraffitti' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
+    
+    <!--Plugin: Retina.js (high def image replacement) - @see: http://retinajs.com/-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+  <!-- Custom styles for this template -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.js"></script>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-functions.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-auth.js"></script>
+
+  <script src="index.js" defer></script>
+  <script src="scripts.js" defer></script>
+  <script src="index.css" defer></script>
+</head>
+<body>
+  <div id="vue-app">
+
+    <div id="header">   
+      <!--Header upper region-->
+      <div class="header-upper">
+        <div class="header-inner container">
+          <!--user menu-->
+          <div class="header-block-flex order-1 mr-auto">
+            <nav class="nav nav-sm header-block-flex">
+              <a class="nav-link d-md-none" href="login.html"><i class="fa fa-user"></i></a>
+              <a class="nav-link text-xs text-uppercase d-none d-md-block" href="/#/signup">Sign Up</a> <a class="nav-link text-xs text-uppercase d-none d-md-block" href="/#/login" >Login</a> 
+            </nav>
+            <div class="header-divider header-divider-sm"></div>
+            <!--language menu-->
+            <a class="nav-link text-xs text-uppercase d-none d-md-block" href="/#/logout" >Logout</a> 
+          </div>
+          <!--social media icons-->
+          <div class="nav nav-icons header-block order-12">
+            <!--@todo: replace with company social media details-->
+            <a href="#" class="nav-link"> <i class="fab fa-twitter-square icon-1x"></i> <span class="sr-only">Twitter</span> </a>
+            <a href="#" class="nav-link"> <i class="fab fa-facebook-square icon-1x"></i> <span class="sr-only">Facebook</span> </a>
+            <a href="#" class="nav-link"> <i class="fab fa-linkedin icon-1x"></i> <span class="sr-only">Linkedin</span> </a>
+            <a href="#" class="nav-link"> <i class="fab fa-google-plus-square icon-1x"></i> <span class="sr-only">Google plus</span> </a>
+          </div>
+        </div>
+      </div>
+      <div data-toggle="sticky">
+        <!--Header & Branding region-->
+        <div class="header">
+          <div class="header-inner container">
+            <!--branding/logo -->
+            <div class="header-brand">
+              <a class="header-brand-text" href="/#/" title="Home">
+                <h1 class="h2">
+                  <span class="header-brand-text-alt">Rod's</span>Podcasts<span class="header-brand-text-alt">.</span>
+                </h1>
+              </a>
+              <div class="header-divider d-none d-lg-block"></div>
+              <div class="header-slogan d-none d-lg-block">A Podcast Website</div>
+            </div>
+            
+            <div class="navbar navbar-expand-md navbar-static-top">
+              <!--everything within this div is collapsed on mobile-->
+              <div class="navbar-main">
+                <!--main navigation-->
+                <ul class="nav navbar-nav float-lg-right dropdown-effect-fade">
+                  
+                  <!-- Homepages -->
+                  <li class="nav-item dropdown dropdown-mega-menu">
+                    <a href="/#/" class="nav-link" id="indexs-drop"> <i class="fa fa-home nav-link-icon"></i> <span class="d-none">Home</span> </a>
+                  </li>
+                  
+                  <!-- Pages -->
+                  <li class="nav-item dropdown">
+                    <a href="/#/create/podcasts" class="nav-link" id="pages-drop" data-toggle="dropdown" data-hover="dropdown">Create Podcasts</a> 
+                  </li>
+                  
+                </ul>
+              </div>
+              <!--/.navbar-collapse -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <a href="/#/login">Login</a>
+    <a href="/#/signup">Signup</a>
+    <a href="/#/logout">Logout</a>
+    <a href="/#/create/podcasts">Create Podcast</a>
+    <a href="/">Homepage</a>
+
+    <router-view></router-view>
+
+    <footer id="footer" class="p-0">
+      <div class="container pt-6 pb-5">
+        <div class="row">
+          <div class="col-md-4">
+            <!--@todo: replace with company contact details-->
+            <h4 class="text-uppercase text-white">
+              Contact Us
+            </h4>
+            <address>
+              <ul class="list-unstyled">
+                <li>
+                  <abbr title="Phone"><i class="fa fa-phone fa-fw"></i></abbr>
+                  019223 8092344
+                </li>
+                <li>
+                  <abbr title="Email"><i class="fa fa-envelope fa-fw"></i></abbr>
+                  info@appstraptheme.com
+                </li>
+                <li>
+                  <abbr title="Address"><i class="fa fa-home fa-fw"></i></abbr>
+                  Sunshine House, Sunville. SUN12 8LU.
+                </li>
+              </ul>
+            </address>
+          </div>
+          
+          <div class="col-md-4">
+            <h4 class="text-uppercase text-white">
+              About Us
+            </h4>
+            <p>Making the web a prettier place one template at a time! We make beautiful, quality, responsive Drupal & web templates!</p>
+          </div>
+          
+          <div class="col-md-4">
+            <h4 class="text-uppercase text-white">
+              Newsletter
+            </h4>
+            <p>Stay up to date with our latest news and product releases by signing up to our newsletter.</p>
+            <!--@todo: replace with mailchimp code-->
+            <form>
+              <div class="input-group">
+                <label class="sr-only" for="email-field">Email</label>
+                <input type="text" class="form-control" id="email-field" placeholder="Email">
+                <span class="input-group-append">
+                  <button class="btn btn-primary" type="button">Go!</button>
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+      </div>
+      <hr class="my-0 hr-blank op-2" />
+      <!--@todo: replace with company copyright details-->
+      <div class="bg-inverse-dark text-sm py-3">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="mb-0">Site template by <a href="appstraptheme.com" class="footer-link">AppStrap</a> | Copyright 2018 &copy; AppStrap</p>
+            </div>
+            <div class="col-md-6">
+              <ul class="list-inline footer-links float-md-right mb-0">
+                <li class="list-inline-item"><a href="#">Terms</a></li>
+                <li class="list-inline-item"><a href="#">Privacy</a></li>
+                <li class="list-inline-item"><a href="#">Contact Us</a></li>
+              </ul>
+            </div>
+          </div>
+          <a href="#top" class="btn btn-icon btn-dark pos-fixed pos-b pos-r mr-3 mb-3 scroll-state-hidden" title="Back to top" data-scroll="scroll-state"><i class="fa fa-chevron-up"></i></a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
+
+<template id="home-page">
+  <div class="vue-component">
+    <div class="container">
+      <div class="row">
+        <h1>{{ message }}</h1>
+        
+        <div class="group">
+          <ul class="item-list">
+            <li v-for="podcast in podcasts" class="list-item card col-md-4">
+              <p>{{podcast.id}}</p>
+              <p>{{podcast.name}}</p>
+              <p>{{podcast.url}}</p>
+              <a v-bind:href="'#/podcasts/' + podcast.id" class="btn btn-secondary">View Podcast</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<template id="podcasts-show-page">
+  <div class="vue-component">
+    <div class="container">
+        <h1>{{message}}</h1>
+      <div v-if="podcast" class="row">
+        <div class="col-md-6">
+          <video controls v-bind:src="podcast.url" type="video/mp4" width="100%">
+            Your browser does not support the video tag.
+          </video>
+
+          <p><strong>Note:</strong> The video tag is not supported in Internet Explorer 8 and earlier versions.</p>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <label>New Comment: </label>
+            <input type="text" v-model="newComment">
+            <button class="btn btn-primary" v-on:click="createPodcastComments()">Post Comment</button>
+          </div>
+          <ul v-if="podcast.podcast_comments" class="list-group">
+            <div v-for="comment in podcast.podcast_comments">
+              <li class="list-group-item justify-content-between">
+                <p>{{comment.body}}</p>
+                <small class="text-left bg-grey">Posted By: {{comment.user_name}}</small>
+                <div id="replyBox">
+                  <small class="text-center"><button class="button mb-2 btn btn-sm btn-outline-blue" v-bind:id="comment.id" v-on:click="replyToComment(comment.id)">Reply</button></small>
+                  <div v-bind:id="comment.id + 'comment'" style="display: none">
+                    <input type="text" v-model="replyComment">
+                    <button class="btn btn-primary" v-on:click="createCommentComments(comment.id)">Post Reply</button>
+                  </div>
+                </div>
+              </li>
+              <span class="comment-border badge badge-secondary badge-pill float-right">{{comment.friendly_created_at}}</span>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <div v-else>
+        <h3>No Podcast available. Please return to home page</h3>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="podcasts-create-page">
+  <div class="vue-component">
+    <div class="container">
+      <h1>{{ message }}</h1>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form">
+            <ul>
+              <li class="text-danger" v-for="error in errors"> {{ error }}</li>
+            </ul>
+            <div class="form-group">
+              <label>Name:</label>
+              <input class="form-control" type="text" v-model="name">
+            </div>
+            <div class="form-group">
+              <label>Video File</label>
+              <input class="form-control" id="videoFile" type="file" v-on:change="fileChange()">
+              <div v-if="uploadProgress">
+                <progress v-bind:value="uploadProgress" max="100">
+              </div>
+            </div>
+            <button class="button btn btn-secondary" v-on:click="createPodcast()">Create Podcast</button>
+          </div>      
+        </div>    
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="login-page">
+  <div class="vue-component">
+
+    <div class="container">
+      <h1>Login</h1>
+      <ul>
+        <li class="text-danger" v-for="error in errors">{{ error }}</li>
+      </ul>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" class="form-control" v-model="email">
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" class="form-control" v-model="password">
+      </div>
+      <button class="btn btn-secondary" v-on:click="submit()">Submit</button>
+    </div>
+
+  </div>
+</template>
+
+<template id="signup-page">
+  <div class="vue-component">
+
+    <div class="container">
+      <h1>Signup</h1>
+      <ul>
+        <li class="text-danger" v-for="error in errors">{{ error }}</li>
+      </ul>
+      <div class="form-group">
+        <label>First Name:</label> 
+        <input type="text" class="form-control" v-model="f_n">
+        <label>Last Name:</label> 
+        <input type="text" class="form-control" v-model="l_n">
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" class="form-control" v-model="email">
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" class="form-control" v-model="password">
+      </div>
+      <div class="form-group">
+        <label>Password confirmation:</label>
+        <input type="password" class="form-control" v-model="passwordConfirmation">
+      </div>
+      <button class="btn btn-secondary" v-on:click="submit()">Submit</button>
+    </div>
+
+  </div>
+</template>

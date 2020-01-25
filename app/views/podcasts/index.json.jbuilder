@@ -1,0 +1,1 @@
+json.array! @podcasts, partial: 'podcast', as: :podcast
