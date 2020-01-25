@@ -5,6 +5,6 @@ Podcast.create!([
   {name: "Vape Vid", url: "https://firebasestorage.googleapis.com/v0/b/rods-podcasts.appspot.com/o/podcasts%2FVaping.mp4?alt=media&token=8041c52b-217e-4403-ae42-807345885ba1"}
 ])
 Comment.create!([
-  {body: "dfasdfasdf", commentable_id: 1, commentable_type: "Podcast", user_id: 1},
-  {body: "asfasdf", commentable_id: 1, commentable_type: "Podcast", user_id: 1}
+  {body: "This is a ocmment to show what an anonymous comment should look like", commentable_id: 1, commentable_type: "Podcast", user_id: 1},
+  {body: "This is a second comment, that should be under the first, to test what a super duper long comment looks like. Mainly for CSS changes, formating, and just to piss off Areesh. Cause why not?", commentable_id: 1, commentable_type: "Podcast", user_id: 1}
 ])

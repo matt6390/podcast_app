@@ -27,7 +27,7 @@ var PodcastShowPage = {
   template: "#podcasts-show-page",
   data: function() {
     return {
-      message: "Welcome to show page!",
+      message: "Loading Podcast...",
       id: this.$route.params.id,
       podcast: {},
       newComment: "",
@@ -38,6 +38,9 @@ var PodcastShowPage = {
   created: function() {
     axios.get("/podcasts/" + this.id).then(function(response) {
       this.podcast = response.data;
+      // var title = document.getElementById('podcastTitle').innerHTML;
+      // title = "{{ podcast.name }}";
+      // console.log(title);
     }.bind(this)).catch(function(error) {
       this.errors = error.response.data.errors;
     }.bind(this));
@@ -50,7 +53,7 @@ var PodcastShowPage = {
         commentable_type: "Podcast"
       };
       axios.post("/comments", params).then(function(response) {
-        location.reload();
+        this.podcast.podcast_comments.push(response.data);
       }.bind(this)).catch(function(error) {
         console.log(error.response.data.errors);
       }.bind(this));
@@ -70,11 +73,12 @@ var PodcastShowPage = {
     replyToComment: function(btnId) {
       var reply = document.getElementById(btnId);
       this.setDisplay(reply);
+      var viewReply = document.getElementById(btnId + 'view');
+      this.setDisplay(viewReply);
       var comment = document.getElementById(btnId + 'comment');
       this.setDisplay(comment);
     },
     setDisplay: function(div) {
-      console.log(div.style.display);
       if (div.style.display === '') {
         div.style.display = "none";
       } else {

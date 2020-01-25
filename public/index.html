@@ -91,7 +91,7 @@
             <div class="header-brand">
               <a class="header-brand-text" href="/#/" title="Home">
                 <h1 class="h2">
-                  <span class="header-brand-text-alt">Rod's</span>Podcasts<span class="header-brand-text-alt">.</span>
+                  <span class="header-brand-text-alt">Rod's</span>Podcasts<span class="header-brand-text-alt">🎤</span>
                 </h1>
               </a>
               <div class="header-divider d-none d-lg-block"></div>
@@ -122,13 +122,6 @@
         </div>
       </div>
     </div>
-
-
-    <a href="/#/login">Login</a>
-    <a href="/#/signup">Signup</a>
-    <a href="/#/logout">Logout</a>
-    <a href="/#/create/podcasts">Create Podcast</a>
-    <a href="/">Homepage</a>
 
     <router-view></router-view>
 
@@ -213,17 +206,21 @@
   <div class="vue-component">
     <div class="container">
       <div class="row">
+
         <h1>{{ message }}</h1>
-        
         <div class="group">
-          <ul class="item-list">
-            <li v-for="podcast in podcasts" class="list-item card col-md-4">
-              <p>{{podcast.id}}</p>
-              <p>{{podcast.name}}</p>
-              <p>{{podcast.url}}</p>
-              <a v-bind:href="'#/podcasts/' + podcast.id" class="btn btn-secondary">View Podcast</a>
-            </li>
-          </ul>
+            <div v-for="podcast in podcasts" class="list-item card col-md-4 bg-shadow">
+              <a v-bind:href="'#/podcasts/' + podcast.id">
+                <div class="card-img-top">
+                  <video v-bind:src="podcast.url" type ="video/mp4" width="100%">
+                    
+                  </video>
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title">{{podcast.name}}</h4>
+                </div>
+              </a>
+            </div>
         </div>
       </div>
 
@@ -234,7 +231,7 @@
 <template id="podcasts-show-page">
   <div class="vue-component">
     <div class="container">
-        <h1>{{message}}</h1>
+        <h1 v-if="!podcast[0]">{{podcast.name}}</h1>
       <div v-if="podcast" class="row">
         <div class="col-md-6">
           <video controls v-bind:src="podcast.url" type="video/mp4" width="100%">
@@ -255,11 +252,13 @@
                 <p>{{comment.body}}</p>
                 <small class="text-left bg-grey">Posted By: {{comment.user_name}}</small>
                 <div id="replyBox">
-                  <small class="text-center"><button class="button mb-2 btn btn-sm btn-outline-blue" v-bind:id="comment.id" v-on:click="replyToComment(comment.id)">Reply</button></small>
+                  <small v-bind:id="comment.id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.id)">Reply</button></small>
+                  <small v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm">View Replies</button></small>
                   <div v-bind:id="comment.id + 'comment'" style="display: none">
                     <input type="text" v-model="replyComment">
                     <button class="btn btn-primary" v-on:click="createCommentComments(comment.id)">Post Reply</button>
                   </div>
+
                 </div>
               </li>
               <span class="comment-border badge badge-secondary badge-pill float-right">{{comment.friendly_created_at}}</span>
