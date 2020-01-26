@@ -205,22 +205,21 @@
 <template id="home-page">
   <div class="vue-component">
     <div class="container">
+      <h1>{{ message }}</h1>
       <div class="row">
-
-        <h1>{{ message }}</h1>
-        <div class="group">
-            <div v-for="podcast in podcasts" class="list-item card col-md-4 bg-shadow">
-              <a v-bind:href="'#/podcasts/' + podcast.id">
-                <div class="card-img-top">
-                  <video v-bind:src="podcast.url" type ="video/mp4" width="100%">
-                    
-                  </video>
-                </div>
-                <div class="card-body">
-                  <h4 class="card-title">{{podcast.name}}</h4>
-                </div>
-              </a>
+        <div v-for="podcast in podcasts" class="list-item col-md-4">
+          <a v-bind:href="'#/podcasts/' + podcast.id">
+            <div class="card bg-shadow">
+              <div class="card-img-top">
+                <video v-bind:src="podcast.url" type ="video/mp4" width="100%">
+                  
+                </video>
+              </div>
+              <div class="card-body">
+                <h4 class="card-title">{{podcast.name}}</h4>
+              </div>
             </div>
+          </a>
         </div>
       </div>
 
@@ -233,6 +232,7 @@
     <div class="container">
         <h1 v-if="!podcast[0]">{{podcast.name}}</h1>
       <div v-if="podcast" class="row">
+        <!-- Video takes up half the screen -->
         <div class="col-md-6">
           <video controls v-bind:src="podcast.url" type="video/mp4" width="100%">
             Your browser does not support the video tag.
@@ -242,6 +242,7 @@
         </div>
         <div class="col-md-6">
           <div class="row">
+            <!-- Add a comment -->
             <label>New Comment: </label>
             <input type="text" v-model="newComment">
             <button class="btn btn-primary" v-on:click="createPodcastComments()">Post Comment</button>
@@ -252,9 +253,20 @@
                 <p>{{comment.body}}</p>
                 <small class="text-left bg-grey">Posted By: {{comment.user_name}}</small>
                 <div id="replyBox">
+                  <!-- Buttons to reply, and view replies -->
                   <small v-bind:id="comment.id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.id)">Reply</button></small>
-                  <small v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm">View Replies</button></small>
-                  <div v-bind:id="comment.id + 'comment'" style="display: none">
+                  <small v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="showReplies(comment.id)">View Replies</button></small>
+
+                  <!-- All replies for a comment, but are hidden until show -->
+                  <div v-if="comment.seeded_comments" v-bind:id="comment.id + 'reply'" style="display: none;">
+                    <p>There are comments here</p>
+                  </div>
+                  <div v-else v-bind:id="comment.id + 'reply'" style="display: none;">
+                    No comments here
+                  </div>
+
+                  <!-- Reply to Comments -->
+                  <div v-bind:id="comment.id + 'comment'" style="display: none;">
                     <input type="text" v-model="replyComment">
                     <button class="btn btn-primary" v-on:click="createCommentComments(comment.id)">Post Reply</button>
                   </div>

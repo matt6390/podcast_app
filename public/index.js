@@ -53,9 +53,13 @@ var PodcastShowPage = {
         commentable_type: "Podcast"
       };
       axios.post("/comments", params).then(function(response) {
-        this.podcast.podcast_comments.push(response.data);
+        if (this.podcast.podcast_comments) {
+          this.podcast.podcast_comments.push(response.data);
+        } else {
+          location.reload();
+        }
       }.bind(this)).catch(function(error) {
-        console.log(error.response.data.errors);
+        console.log(error);
       }.bind(this));
     },
     createCommentComments: function(commentId) {
@@ -70,6 +74,16 @@ var PodcastShowPage = {
         console.log(error.response.data.errors);
       }.bind(this));
     },
+    showReplies: function(commentId) {
+      var reply = document.getElementById(commentId);
+      this.setDisplay(reply);
+      var viewReply = document.getElementById(commentId + 'view');
+      this.setDisplay(viewReply);
+      var seeded = document.getElementById(commentId + 'reply');
+      this.setDisplay(seeded);
+
+
+    },
     replyToComment: function(btnId) {
       var reply = document.getElementById(btnId);
       this.setDisplay(reply);
@@ -79,10 +93,10 @@ var PodcastShowPage = {
       this.setDisplay(comment);
     },
     setDisplay: function(div) {
-      if (div.style.display === '') {
-        div.style.display = "none";
+      if (div.style.display === 'none') {
+        div.style.display = "block";
       } else {
-        div.style.display = "";
+        div.style.display = "none";
       }
     }
   },
@@ -124,7 +138,7 @@ var PodcastCreatePage = {
             // create podcast ref in Rails database
             var podcastParams = {name: this.videoName(), url: downloadURL};
             axios.post("/podcasts", podcastParams).then(function(response) {
-
+              router.push("/");
             }.bind(this)).catch(function(error) {
               this.errors.push(error.response.data.errors);
             }.bind(this));
