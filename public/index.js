@@ -117,6 +117,7 @@ var PodcastCreatePage = {
   created: function() {},
   methods: {
     createPodcast: function() {
+      console.log('starting');
       this.errors = [];
       this.uploadProgress = null;
       if (this.videoFile()) {

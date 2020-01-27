@@ -91,7 +91,7 @@
             <div class="header-brand">
               <a class="header-brand-text" href="/#/" title="Home">
                 <h1 class="h2">
-                  <span class="header-brand-text-alt">Rod's</span>Podcasts<span class="header-brand-text-alt">🎤</span>
+                  <span class="header-brand-text-alt">Rod</span>Casts<span class="header-brand-text-alt">🎤</span>
                 </h1>
               </a>
               <div class="header-divider d-none d-lg-block"></div>
@@ -237,6 +237,7 @@
           <video controls v-bind:src="podcast.url" type="video/mp4" width="100%">
             Your browser does not support the video tag.
           </video>
+          <audio contorls v-bind:src="podcast.url"></audio>
 
           <p><strong>Note:</strong> The video tag is not supported in Internet Explorer 8 and earlier versions.</p>
         </div>
