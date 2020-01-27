@@ -116,6 +116,10 @@ var PodcastCreatePage = {
   },
   created: function() {},
   methods: {
+    createPodcastTest: function() {
+      var podcastAudoio = document.getElementById('videoFile').files[0];
+      console.log(this.podcastFileType(podcastAudoio.type));
+    },
     createPodcast: function() {
       console.log('starting');
       this.errors = [];
@@ -149,6 +153,19 @@ var PodcastCreatePage = {
         }.bind(this));
       } else {
         this.errors.push("Please choose a file");
+      }
+    },
+    podcastFileType: function(file) {
+      var regex = file;
+      var patt = /audio/i;
+      if (regex.match(/audio/i)) {
+        return 'audio';
+      } else {
+        if (regex.match(/video/i)) {
+          return 'video';
+        } else  {
+          return 'uh oh';
+        }
       }
     },
     videoFile: function() {
