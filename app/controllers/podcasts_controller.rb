@@ -23,11 +23,24 @@ class PodcastsController < ApplicationController
     # binding.pry
     @podcast = Podcast.new(
       name: params[:name],
-      url: params[:url]
+      url: params[:url],
+      format: params[:format]
       )
 
     if @podcast.save
       render json: {message: 'Podcast created successfully'}, status: :created
+    else
+      render json: {errors: @podcast.errors.full_messages}, status: :bad_request
+    end
+  end
+
+  def update
+    @podcast.name = params[:name] || @podcast.name
+    @podcast.url = params[:url] || @podcast.url
+    @podcast.format = params[:format] || @podcast.format
+
+    if @podcast.save
+      render json: {message: 'Podcast updated successfully'}, status: :updated
     else
       render json: {errors: @podcast.errors.full_messages}, status: :bad_request
     end

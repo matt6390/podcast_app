@@ -126,31 +126,61 @@ var PodcastCreatePage = {
       this.uploadProgress = null;
       if (this.videoFile()) {
         var podcast = document.getElementById('videoFile').files[0];
-        var storage = firebase.storage().ref();
-        var upload = storage.child("podcasts/" + podcast.name).put(podcast);
 
-        // monitor upload progress
-        upload.on('state_changed', function(snapshot) {
-          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          this.uploadProgress = progress;
-          console.log('Upload is ' + progress + '% done');
-        }.bind(this), function(error) {
-          // Upload unsuccessful
-          this.errors = [error.message_];
-        }.bind(this), function() {
-          // upload completed
-          upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-            // create podcast ref in Rails database
-            var podcastParams = {name: this.videoName(), url: downloadURL};
-            axios.post("/podcasts", podcastParams).then(function(response) {
-              router.push("/");
-            }.bind(this)).catch(function(error) {
-              this.errors.push(error.response.data.errors);
+        if (this.podcastFileType(podcast.type) === 'video') {
+          var storage = firebase.storage().ref();
+          var upload = storage.child("podcasts/" + podcast.name).put(podcast);
+
+          // monitor upload progress
+          upload.on('state_changed', function(snapshot) {
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            this.uploadProgress = progress;
+            console.log('Upload is ' + progress + '% done');
+          }.bind(this), function(error) {
+            // Upload unsuccessful
+            this.errors = [error.message_];
+          }.bind(this), function() {
+            // upload completed
+            upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+              // create podcast ref in Rails database
+              var podcastParams = {name: this.videoName(), url: downloadURL, format: "video"};
+              axios.post("/podcasts", podcastParams).then(function(response) {
+                router.push("/");
+              }.bind(this)).catch(function(error) {
+                this.errors.push(error.response.data.errors);
+              }.bind(this));
+
+
             }.bind(this));
-
-
           }.bind(this));
-        }.bind(this));
+        } else {
+          if (this.podcastFileType(podcast.type) === 'audio') {
+            var storage = firebase.storage().ref();
+            var upload = storage.child("podcastsAudio/" + podcast.name).put(podcast);
+
+            // monitor upload progress
+            upload.on('state_changed', function(snapshot) {
+              var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              this.uploadProgress = progress.toFixed(2);
+            }.bind(this), function(error) {
+              // Upload unsuccessful
+              this.errors = [error.message_];
+            }.bind(this), function() {
+              // upload completed
+              upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                // create podcast ref in Rails database
+                var podcastParams = {name: this.videoName(), url: downloadURL, format: "audio"};
+                axios.post("/podcasts", podcastParams).then(function(response) {
+                  router.push("/");
+                }.bind(this)).catch(function(error) {
+                  this.errors.push(error.response.data.errors);
+                }.bind(this));
+
+
+              }.bind(this));
+            }.bind(this));
+          }
+        }
       } else {
         this.errors.push("Please choose a file");
       }
