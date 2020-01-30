@@ -35,10 +35,10 @@
     
     
     <!-- Google fonts -->
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+   <!--  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Rambla:400,700' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Calligraffitti' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'> -->
   <!-- Custom styles for this template -->
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
@@ -267,8 +267,7 @@
             <button class="btn btn-primary" v-on:click="createPodcastComments()">Post Comment</button>
           </div>
           <ul v-if="podcast.podcast_comments" class="list-group">
-            <div v-for="comment in podcast.podcast_comments">
-              <li class="list-group-item justify-content-between">
+              <li v-for="comment in podcast.podcast_comments" class="list-group-item justify-content-between">
                 <p>{{comment.body}}</p>
                 <small class="text-left bg-grey">Posted By: {{comment.user_name}}</small>
                 <div id="replyBox">
@@ -278,10 +277,56 @@
 
                   <!-- All replies for a comment, but are hidden until show -->
                   <div v-if="comment.seeded_comments" v-bind:id="comment.id + 'reply'" style="display: none;">
-                    <p>There are comments here</p>
+                    <!-- List of comments on a comment -->
+                    <ul class="simpled-nested">
+                      <!-- first one -->
+                      <li v-if="comment.seeded_comments[0]" class="list-group-item justify-content-between">
+                        <!-- comment information -->
+                        <p>{{comment.seeded_comments[0].body}}</p>
+                        <small class="text-left bg-grey">Posted By: {{comment.seeded_comments[0].user_name}}</small>
+                        <!--  reply to seeded comment button -->
+                        <small v-bind:id="comment.seeded_comments[0].id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.seeded_comments[0].id)">Reply</button></small>
+                        <!-- view even more replies -->
+                        <small v-bind:id="comment.seeded_comments[0].id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="viewMoreReplies(comment.seeded_comments[0].id)">View Replies</button></small>
+                        <!-- reply to seeded comment box -->
+                        <div v-bind:id="comment.seeded_comments[0].id + 'comment'" style="display: none;">
+                          <input type="text" v-model="replyComment">
+                          <button class="btn btn-primary" v-on:click="createCommentComments(comment.seeded_comments[0].id)">Post Reply</button>
+                        </div>
+                      </li>
+                      <!-- second one -->
+                      <li v-if="comment.seeded_comments[1]" class="list-group-item justify-content-between">
+                        <p>{{comment.seeded_comments[1].body}}</p>
+                        <small class="text-left bg-grey">Posted By: {{comment.seeded_comments[1].user_name}}</small>
+                        <!--  reply to seeded comment button -->
+                        <small v-bind:id="comment.seeded_comments[1].id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.seeded_comments[1].id)">Reply</button></small>
+                        <!-- view even more replies -->
+                        <small v-bind:id="comment.seeded_comments[1].id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="viewMoreReplies(comment.seeded_comments[1].id)">View Replies</button></small>
+                        <!-- reply to seeded comment box -->
+                        <div v-bind:id="comment.seeded_comments[1].id + 'comment'" style="display: none;">
+                          <input type="text" v-model="replyComment">
+                          <button class="btn btn-primary" v-on:click="createCommentComments(comment.seeded_comments[1].id)">Post Reply</button>
+                        </div>
+                      </li>
+                      <li v-if="comment.seeded_comments[2]" class="list-group-item justify-content-between">
+                        <p>{{comment.seeded_comments[2].body}}</p>
+                        <small class="text-left bg-grey">Posted By: {{comment.seeded_comments[2].user_name}}</small>
+                        <!--  reply to seeded comment button -->
+                        <small v-bind:id="comment.seeded_comments[2].id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.seeded_comments[2].id)">Reply</button></small>
+                        <!-- view even more replies -->
+                        <small v-bind:id="comment.seeded_comments[2].id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="viewMoreReplies(comment.seeded_comments[2].id)">View Replies</button></small>
+                        <!-- reply to seeded comment box -->
+                        <div v-bind:id="comment.seeded_comments[2].id + 'comment'" style="display: none;">
+                          <input type="text" v-model="replyComment">
+                          <button class="btn btn-primary" v-on:click="createCommentComments(comment.seeded_comments[2].id)">Post Reply</button>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                   <div v-else v-bind:id="comment.id + 'reply'" style="display: none;">
-                    No comments here
+                    <small>
+                      No replies to this comment yet
+                    </small>
                   </div>
 
                   <!-- Reply to Comments -->
@@ -291,9 +336,8 @@
                   </div>
 
                 </div>
+                <span class="comment-border badge badge-secondary badge-pill float-right">{{comment.friendly_created_at}}</span>
               </li>
-              <span class="comment-border badge badge-secondary badge-pill float-right">{{comment.friendly_created_at}}</span>
-            </div>
           </ul>
         </div>
       </div>
@@ -324,7 +368,7 @@
               <input class="form-control" id="videoFile" type="file" v-on:change="fileChange()">
               <div v-if="uploadProgress">
                 <progress v-bind:value="uploadProgress" max="100"></progress>
-                <p>{{uploadProgress}}% uploaded</p>
+                <p>{{uploadProgress}}% uploaded (please don't leave this webpage)</p>
               </div>
             </div>
             <button class="button btn btn-secondary" v-on:click="createPodcast()">Create Podcast</button>

@@ -78,8 +78,9 @@ var PodcastShowPage = {
       this.setDisplay(viewReply);
       var seeded = document.getElementById(commentId + 'reply');
       this.setDisplay(seeded);
-
-
+    },
+    viewMoreReplies: function(id) {
+      console.log(id);
     },
     replyToComment: function(btnId) {
       var reply = document.getElementById(btnId);
