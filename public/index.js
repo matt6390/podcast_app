@@ -2,7 +2,7 @@ var HomePage = {
   template: "#home-page",
   data: function() {
     return {
-      message: "Welcome to Rod's Podcasts!",
+      message: "Welcome to RodCasts!",
       podcasts: [],
       errors:[]
     };
@@ -38,9 +38,6 @@ var PodcastShowPage = {
   created: function() {
     axios.get("/podcasts/" + this.id).then(function(response) {
       this.podcast = response.data;
-      // var title = document.getElementById('podcastTitle').innerHTML;
-      // title = "{{ podcast.name }}";
-      // console.log(title);
     }.bind(this)).catch(function(error) {
       this.errors = error.response.data.errors;
     }.bind(this));
@@ -114,19 +111,21 @@ var PodcastCreatePage = {
       video: null
     };
   },
-  created: function() {},
+  created: function() {
+    axios.get("admins/current").then(function(response) {
+      console.log(response);
+    }.bind(this)).catch(function(errors) {
+      router.push('/');
+    }.bind(this));
+  },
   methods: {
-    createPodcastTest: function() {
-      var podcastAudoio = document.getElementById('videoFile').files[0];
-      console.log(this.podcastFileType(podcastAudoio.type));
-    },
     createPodcast: function() {
-      console.log('starting');
       this.errors = [];
       this.uploadProgress = null;
       if (this.videoFile()) {
         var podcast = document.getElementById('videoFile').files[0];
 
+        // if a video is uploaded, save as video file
         if (this.podcastFileType(podcast.type) === 'video') {
           var storage = firebase.storage().ref();
           var upload = storage.child("podcasts/" + podcast.name).put(podcast);
@@ -134,8 +133,7 @@ var PodcastCreatePage = {
           // monitor upload progress
           upload.on('state_changed', function(snapshot) {
             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            this.uploadProgress = progress;
-            console.log('Upload is ' + progress + '% done');
+            this.uploadProgress = progress.toFixed(2);
           }.bind(this), function(error) {
             // Upload unsuccessful
             this.errors = [error.message_];
@@ -154,6 +152,7 @@ var PodcastCreatePage = {
             }.bind(this));
           }.bind(this));
         } else {
+          // if an audio file is uploaded, save as an audio file
           if (this.podcastFileType(podcast.type) === 'audio') {
             var storage = firebase.storage().ref();
             var upload = storage.child("podcastsAudio/" + podcast.name).put(podcast);
@@ -179,10 +178,13 @@ var PodcastCreatePage = {
 
               }.bind(this));
             }.bind(this));
+          } else {
+            // something that is not an audio or video file is selected
+            this.errors.push("Please choose a video/audio file");
           }
         }
       } else {
-        this.errors.push("Please choose a file");
+        this.errors.push("Please choose a video/audio file");
       }
     },
     podcastFileType: function(file) {
@@ -221,6 +223,128 @@ var PodcastCreatePage = {
   computed: {}
 };
 
+var AdminLoginPage = {
+  template: "#admin-login-page",
+  data: function() {
+    return {
+      email: this.$route.params.email,
+      password: this.$route.params.password,
+      errors: []
+    };
+  },
+  created: function() {
+    if (this.email && this.password) {
+      var params = {
+        auth: { email: this.email, password: this.password }
+      };
+      axios
+        .post("/admin_token", params)
+        .then(function(response) {
+          // set jwt for current_user on clients end
+          axios.defaults.headers.common["Authorization"] =
+            "Bearer " + response.data.jwt;
+          localStorage.setItem("jwt", response.data.jwt);
+
+          router.push("/");
+          // firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
+          //   // when logged into firebase, send to homepage
+
+          // }).catch(function(error) {
+          //   // firebase login errors
+          //   this.error = error.message;
+          // });
+
+        })
+        .catch(
+          function(error) {
+            router.push('/login');
+          }.bind(this)
+        );
+    }
+  },
+  methods: {
+    submit: function() {
+      var params = {
+        auth: { email: this.email, password: this.password }
+      };
+      axios
+        .post("/admin_token", params)
+        .then(function(response) {
+          // set jwt for current_user on clients end
+          axios.defaults.headers.common["Authorization"] =
+            "Bearer " + response.data.jwt;
+          localStorage.setItem("jwt", response.data.jwt);
+          router.push("/");
+
+          // firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
+          //   // when logged into firebase, send to homepage
+
+          // }).catch(function(error) {
+          //   // firebase login errors
+          //   this.error = error.message;
+          //   console.log(error.code);
+          //   console.log(error.message);
+          // });
+
+        })
+        .catch(
+          function(error) {
+            this.errors = ["Invalid email or password."];
+            this.email = "";
+            this.password = "";
+          }.bind(this)
+        );
+    }
+  }
+};
+
+var AdminSignupPage = {
+  template: "#admin-signup-page",
+  data: function() {
+    return {
+      id: this.$route.params.id,
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+      errors: []
+    };
+  },
+  methods: {
+    submit: function() {
+      var params = {
+        id: this.id,
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.passwordConfirmation
+      };
+      // create account on client
+      axios
+        .post("/admins", params)
+        .then(function(response) {
+          // when creation successful, create firebase account so only logged in can upload files
+          router.push('/login/admin/' + params.email + "/" + params.password);
+          // firebase.auth().createUserWithEmailAndPassword(params.email, params.password).then(function(response) {
+          //   // successful account creation
+
+          // }).catch(function(error) {
+          //   // if didnt work?
+          //   var errorCode = error.code;
+          //   this.errors = error.message;
+          //   console.log(error.message);
+          // });
+        })
+        .catch(
+          // when initial client account is unsuccessful
+          function(error) {
+            this.errors = error.response.data.errors;
+          }.bind(this)
+        );
+    }
+  }
+};
+
 var LoginPage = {
   template: "#login-page",
   data: function() {
@@ -242,16 +366,7 @@ var LoginPage = {
           axios.defaults.headers.common["Authorization"] =
             "Bearer " + response.data.jwt;
           localStorage.setItem("jwt", response.data.jwt);
-
-          firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
-            // when logged into firebase, send to homepage
-            router.push("/");
-
-          }).catch(function(error) {
-            // firebase login errors
-            this.error = error.message;
-          });
-
+          router.push("/");
         })
         .catch(
           function(error) {
@@ -272,16 +387,7 @@ var LoginPage = {
           axios.defaults.headers.common["Authorization"] =
             "Bearer " + response.data.jwt;
           localStorage.setItem("jwt", response.data.jwt);
-
-          firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
-            // when logged into firebase, send to homepage
-            router.push("/");
-
-          }).catch(function(error) {
-            // firebase login errors
-            this.error = error.message;
-          });
-
+          router.push("/");
         })
         .catch(
           function(error) {
@@ -319,15 +425,7 @@ var SignupPage = {
       axios
         .post("/users", params)
         .then(function(response) {
-          // when creation successful, create firebase account so only logged in can upload files
-          firebase.auth().createUserWithEmailAndPassword(params.email, params.password).then(function(response) {
-            // successful account creation
-            router.push('/login/' + params.email + "/" + params.password);
-          }).catch(function(error) {
-            // if didnt work?
-            var errorCode = error.code;
-            this.errors = error.message;
-          });
+          router.push('/login/' + params.email + "/" + params.password);
         })
         .catch(
           // when initial client account is unsuccessful
@@ -357,9 +455,16 @@ var router = new VueRouter({
     { path: "/", component: HomePage },
     { path: "/podcasts/:id", component: PodcastShowPage },
     { path: "/create/podcasts", component: PodcastCreatePage },
+    // singup pages
     {path: "/signup", component: SignupPage},
+    {path: "/signup/admin/:id", component: AdminSignupPage},
+    // logins for admins
+    {path: "/login/admin", component: AdminLoginPage},
+    {path: "/login/admin/:email/:password", component: AdminLoginPage},
+    // logins for users
     {path: "/login", component: LoginPage},
     {path: "/login/:email/:password", component: LoginPage},
+
     {path: "/logout", component: LogoutPage}
   ],
   scrollBehavior: function(to, from, savedPosition) {

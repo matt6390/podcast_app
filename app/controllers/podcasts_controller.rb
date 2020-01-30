@@ -20,17 +20,21 @@ class PodcastsController < ApplicationController
   end
 
   def create
-    # binding.pry
-    @podcast = Podcast.new(
-      name: params[:name],
-      url: params[:url],
-      format: params[:format]
-      )
+    if current_admin
+      @podcast = Podcast.new(
+        name: params[:name],
+        url: params[:url],
+        format: params[:format]
+        )
 
-    if @podcast.save
-      render json: {message: 'Podcast created successfully'}, status: :created
-    else
-      render json: {errors: @podcast.errors.full_messages}, status: :bad_request
+      if @podcast.save
+        render json: {message: 'Podcast created successfully'}, status: :created
+      else
+        render json: {errors: @podcast.errors.full_messages}, status: :bad_request
+      end
+      
+    else #not logged in as an admin  
+      render json: {error: "Admin must be logged in"}, status: :bad_request
     end
   end
 
