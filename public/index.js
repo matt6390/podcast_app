@@ -4,12 +4,19 @@ var HomePage = {
     return {
       message: "Welcome to RodCasts!",
       podcasts: [],
+      admin: null,
       errors:[]
     };
   },
   created: function() {
     // get the podcasts and urls from database
     axios.get("/podcasts").then(function(response) {
+      // if admin is present, add the create podcast link
+      axios.get("admins/current").then(function(response) {
+        var createPodcast = document.getElementById('createPodcast');
+        createPodcast.innerHTML = '<a href="/#/create/podcasts" class="nav-link" id="pages-drop" data-toggle="dropdown" data-hover="dropdown">Create Podcasts</a>';
+      }.bind(this)).catch(function(errors) {
+      }.bind(this));
       response.data.forEach(function(podcast) {
         this.podcasts.push(podcast);
       }.bind(this));
@@ -38,6 +45,11 @@ var PodcastShowPage = {
   created: function() {
     axios.get("/podcasts/" + this.id).then(function(response) {
       this.podcast = response.data;
+      axios.get("admins/current").then(function(response) {
+        var createPodcast = document.getElementById('createPodcast');
+        createPodcast.innerHTML = '<a href="/#/create/podcasts" class="nav-link" id="pages-drop" data-toggle="dropdown" data-hover="dropdown">Create Podcasts</a>';
+      }.bind(this)).catch(function(errors) {
+      }.bind(this));
     }.bind(this)).catch(function(error) {
       this.errors = error.response.data.errors;
     }.bind(this));
@@ -114,6 +126,8 @@ var PodcastCreatePage = {
   },
   created: function() {
     axios.get("admins/current").then(function(response) {
+      var createPodcast = document.getElementById('createPodcast');
+      createPodcast.innerHTML = '<a href="/#/create/podcasts" class="nav-link" id="pages-drop" data-toggle="dropdown" data-hover="dropdown">Create Podcasts</a>';
     }.bind(this)).catch(function(errors) {
       router.push('/');
     }.bind(this));
