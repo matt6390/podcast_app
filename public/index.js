@@ -113,7 +113,6 @@ var PodcastCreatePage = {
   },
   created: function() {
     axios.get("admins/current").then(function(response) {
-      console.log(response);
     }.bind(this)).catch(function(errors) {
       router.push('/');
     }.bind(this));
@@ -245,15 +244,14 @@ var AdminLoginPage = {
             "Bearer " + response.data.jwt;
           localStorage.setItem("jwt", response.data.jwt);
 
-          router.push("/");
-          // firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
-          //   // when logged into firebase, send to homepage
+          firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
+            // when logged into firebase, send to homepage
+            router.push("/");
 
-          // }).catch(function(error) {
-          //   // firebase login errors
-          //   this.error = error.message;
-          // });
-
+          }).catch(function(error) {
+            // firebase login errors
+            this.error = error.message;
+          });
         })
         .catch(
           function(error) {
@@ -274,17 +272,17 @@ var AdminLoginPage = {
           axios.defaults.headers.common["Authorization"] =
             "Bearer " + response.data.jwt;
           localStorage.setItem("jwt", response.data.jwt);
-          router.push("/");
 
-          // firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
-          //   // when logged into firebase, send to homepage
+          firebase.auth().signInWithEmailAndPassword(params.auth.email, params.auth.password).then(function(response) {
+            // when logged into firebase, send to homepage
+            router.push("/");
 
-          // }).catch(function(error) {
-          //   // firebase login errors
-          //   this.error = error.message;
-          //   console.log(error.code);
-          //   console.log(error.message);
-          // });
+          }).catch(function(error) {
+            // firebase login errors
+            this.error = error.message;
+            console.log(error.code);
+            console.log(error.message);
+          });
 
         })
         .catch(
@@ -324,16 +322,16 @@ var AdminSignupPage = {
         .post("/admins", params)
         .then(function(response) {
           // when creation successful, create firebase account so only logged in can upload files
-          router.push('/login/admin/' + params.email + "/" + params.password);
-          // firebase.auth().createUserWithEmailAndPassword(params.email, params.password).then(function(response) {
-          //   // successful account creation
+          firebase.auth().createUserWithEmailAndPassword(params.email, params.password).then(function(response) {
+            // successful account creation
+            router.push('/login/admin/' + params.email + "/" + params.password);
 
-          // }).catch(function(error) {
-          //   // if didnt work?
-          //   var errorCode = error.code;
-          //   this.errors = error.message;
-          //   console.log(error.message);
-          // });
+          }).catch(function(error) {
+            // if didnt work?
+            var errorCode = error.code;
+            this.errors = error.message;
+            console.log(error.message);
+          });
         })
         .catch(
           // when initial client account is unsuccessful
