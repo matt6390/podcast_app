@@ -5,6 +5,13 @@ class CommentsController < ApplicationController
     render 'index.json.jbuilder'
   end
 
+  def show
+    @comment = Comment.find(params[:id])
+
+    render 'show.json.jbuilder'
+    
+  end
+
   def commentable
     @comments = Comment.where("commentable_id = ? and commentable_type = ?", params[:id], "Podcast")
     render "index.json.jbuilder"

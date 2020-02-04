@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   delete "/podcasts/:id" => 'podcasts#destroy'
 
   get "/comments" => 'comments#index'
+  get "/comments/:id" => 'comments#show'
   get "/commentables/:id" => 'comments#commentable'
   get "/comments/:id" => 'comments#show'
   post "/comments" => 'comments#create'

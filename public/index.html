@@ -253,10 +253,6 @@
           <video controls v-bind:src="podcast.url" type="video/mp4" width="100%">
             Your browser does not support the video tag.
           </video>
-          <!-- <audio contorls type="audio" width="100%">
-            Your browser does not support the &lt;audio&gt; tag.
-            <source v-bind:src="podcast.url">
-          </audio> -->
         </div>
         <div class="col-md-6">
           <div class="row">
@@ -272,61 +268,7 @@
                 <div id="replyBox">
                   <!-- Buttons to reply, and view replies -->
                   <small v-bind:id="comment.id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.id)">Reply</button></small>
-                  <small v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="showReplies(comment.id)">View Replies</button></small>
-
-                  <!-- All replies for a comment, but are hidden until show -->
-                  <div v-if="comment.seeded_comments" v-bind:id="comment.id + 'reply'" style="display: none;">
-                    <!-- List of comments on a comment -->
-                    <ul class="simpled-nested">
-                      <!-- first one -->
-                      <li v-if="comment.seeded_comments[0]" class="list-group-item justify-content-between">
-                        <!-- comment information -->
-                        <p>{{comment.seeded_comments[0].body}}</p>
-                        <small class="text-left bg-grey">Posted By: {{comment.seeded_comments[0].user_name}}</small>
-                        <!--  reply to seeded comment button -->
-                        <small v-bind:id="comment.seeded_comments[0].id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.seeded_comments[0].id)">Reply</button></small>
-                        <!-- view even more replies -->
-                        <small v-bind:id="comment.seeded_comments[0].id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="viewMoreReplies(comment.seeded_comments[0].id)">View Replies</button></small>
-                        <!-- reply to seeded comment box -->
-                        <div v-bind:id="comment.seeded_comments[0].id + 'comment'" style="display: none;">
-                          <input type="text" v-model="replyComment">
-                          <button class="btn btn-primary" v-on:click="createCommentComments(comment.seeded_comments[0].id)">Post Reply</button>
-                        </div>
-                      </li>
-                      <!-- second one -->
-                      <li v-if="comment.seeded_comments[1]" class="list-group-item justify-content-between">
-                        <p>{{comment.seeded_comments[1].body}}</p>
-                        <small class="text-left bg-grey">Posted By: {{comment.seeded_comments[1].user_name}}</small>
-                        <!--  reply to seeded comment button -->
-                        <small v-bind:id="comment.seeded_comments[1].id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.seeded_comments[1].id)">Reply</button></small>
-                        <!-- view even more replies -->
-                        <small v-bind:id="comment.seeded_comments[1].id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="viewMoreReplies(comment.seeded_comments[1].id)">View Replies</button></small>
-                        <!-- reply to seeded comment box -->
-                        <div v-bind:id="comment.seeded_comments[1].id + 'comment'" style="display: none;">
-                          <input type="text" v-model="replyComment">
-                          <button class="btn btn-primary" v-on:click="createCommentComments(comment.seeded_comments[1].id)">Post Reply</button>
-                        </div>
-                      </li>
-                      <li v-if="comment.seeded_comments[2]" class="list-group-item justify-content-between">
-                        <p>{{comment.seeded_comments[2].body}}</p>
-                        <small class="text-left bg-grey">Posted By: {{comment.seeded_comments[2].user_name}}</small>
-                        <!--  reply to seeded comment button -->
-                        <small v-bind:id="comment.seeded_comments[2].id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.seeded_comments[2].id)">Reply</button></small>
-                        <!-- view even more replies -->
-                        <small v-bind:id="comment.seeded_comments[2].id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="viewMoreReplies(comment.seeded_comments[2].id)">View Replies</button></small>
-                        <!-- reply to seeded comment box -->
-                        <div v-bind:id="comment.seeded_comments[2].id + 'comment'" style="display: none;">
-                          <input type="text" v-model="replyComment">
-                          <button class="btn btn-primary" v-on:click="createCommentComments(comment.seeded_comments[2].id)">Post Reply</button>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  <div v-else v-bind:id="comment.id + 'reply'" style="display: none;">
-                    <small>
-                      No replies to this comment yet
-                    </small>
-                  </div>
+                  <small v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="replyPage(comment.id)">View Replies</button></small>
 
                   <!-- Reply to Comments -->
                   <div v-bind:id="comment.id + 'comment'" style="display: none;">
@@ -342,6 +284,57 @@
       </div>
       <div v-else>
         <h3>No Podcast available. Please return to home page</h3>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="comments-show-page">
+  <div class="vue-component">
+    <div class="container">
+      <h1>{{ message }}</h1>
+      <div>
+        <a v-bind:href="'/#/podcasts/' + podcastId">Return to Podcast</a>
+      </div>
+      <div class="row">
+        <div v-if="comment">
+          <!-- original comment -->
+          <ul class="list-group">
+            <li class="list-group-item justify-content-between">
+              <p>{{ comment.body }}</p>
+              <small class="text-left bg-grey">Posted By: {{comment.user_name}}</small>
+              <div id="replyBox">
+                <small v-bind:id="comment.id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.id)">Reply</button></small>
+                <div v-bind:id="comment.id + 'comment'" style="display: none;">
+                  <input type="text" v-model="replyComment">
+                  <button class="btn btn-primary" v-on:click="createCommentComments(comment.id)">Post Reply</button>
+                </div>
+                <span class="comment-border badge badge-secondary badge-pill float-right">{{comment.friendly_created_at}}</span>
+              </div>
+              <!-- nested replies -->
+              <div id="replies">
+                <ul class="simple-nested">
+                  <li v-for=" seed in comment.seeded_comments" class="list-group-item justify-content-between">
+                    <p>{{ seed.body }}</p>
+                    <small class="text-left bg-grey">Posted By: {{seed.user_name}}</small>
+
+                    <div id="replyBox">
+                      <small v-bind:id="seed.id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(seed.id)">Reply</button></small>
+                      <div v-bind:id="seed.id + 'comment'" style="display: none;">
+                        <input type="text" v-model="replyComment">
+                        <button class="btn btn-primary" v-on:click="createSeededComments(seed.id)">Post Reply</button>
+                      </div>
+                      <span class="comment-border badge badge-secondary badge-pill float-right">{{seed.friendly_created_at}}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div v-else>
+          <h1>No comment found or havent received from database yet.</h1>
+        </div>
       </div>
     </div>
   </div>

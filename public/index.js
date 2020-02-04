@@ -83,23 +83,96 @@ var PodcastShowPage = {
         console.log(error.response.data.errors);
       }.bind(this));
     },
-    showReplies: function(commentId) {
-      var reply = document.getElementById(commentId);
-      this.setDisplay(reply);
-      var viewReply = document.getElementById(commentId + 'view');
-      this.setDisplay(viewReply);
-      var seeded = document.getElementById(commentId + 'reply');
-      this.setDisplay(seeded);
+    replyPage: function(id) {
+      router.push("/comments/" + id + "/" + this.id);
     },
-    viewMoreReplies: function(id) {
-      console.log(id);
-    },
-    replyToComment: function(btnId) {
-      var reply = document.getElementById(btnId);
+    // showReplies: function(commentId) {
+    //   var reply = document.getElementById(commentId);
+    //   this.setDisplay(reply);
+    //   var viewReply = document.getElementById(commentId + 'view');
+    //   this.setDisplay(viewReply);
+    //   var seeded = document.getElementById(commentId + 'reply');
+    //   this.setDisplay(seeded);
+    // },
+    replyToComment: function(id) {
+      var reply = document.getElementById(id);
       this.setDisplay(reply);
-      var viewReply = document.getElementById(btnId + 'view');
+      var viewReply = document.getElementById(id + 'view');
       this.setDisplay(viewReply);
-      var comment = document.getElementById(btnId + 'comment');
+      var comment = document.getElementById(id + 'comment');
+      this.setDisplay(comment);
+    },
+    setDisplay: function(div) {
+      if (div.style.display === 'none') {
+        div.style.display = "block";
+      } else {
+        div.style.display = "none";
+      }
+    }
+  },
+  computed: {}
+};
+
+var CommentsShowPage = {
+  template: "#comments-show-page",
+  data: function() {
+    return {
+      message: "Comments Show Page",
+      id: this.$route.params.id,
+      podcastId: this.$route.params.podcastId,
+      comment: null,
+      replyComment: ''
+    };
+  },
+  created: function() {
+    // axios.get("/comments/" + this.id).then(function(response) {
+    //   console.log(response.data);
+    //   this.comment = response.data;
+    // }.bind(this)).catch(function(error) {
+    //   console.log(error);
+    // }.bind(this));
+  },
+  mounted: function() {
+    axios.get("/comments/" + this.id).then(function(response) {
+      console.log(response.data);
+      this.comment = response.data;
+    }.bind(this)).catch(function(error) {
+      console.log(error);
+    }.bind(this));
+  },
+  methods: {
+    createSeededComments: function(id) {
+      var params = { body: this.replyComment, commentable_id: id, commentable_type: "Comment"};
+      axios.post("/comments", params).then(function(response) {
+        var reply = document.getElementById(id);
+        var comment = document.getElementById(id + "comment");
+        this.setDisplay(reply);
+        this.setDisplay(comment);
+        // both pushes and reloads because single page apps wont automatically re-do the created function when pushing to a similar page with different id
+        router.push("/comments/" + id + "/" + this.podcastId);
+        location.reload();
+      }.bind(this)).catch(function(error) {
+        console.log(error.response.data.errors);
+      }.bind(this));
+    },
+    createCommentComments: function(commentId) {
+      var params = { body: this.replyComment, commentable_id: commentId, commentable_type: "Comment"};
+      axios.post("/comments", params).then(function(response) {
+        var reply = document.getElementById(commentId);
+        var comment = document.getElementById(commentId + "comment");
+        this.setDisplay(reply);
+        this.setDisplay(comment);
+        location.reload();
+      }.bind(this)).catch(function(error) {
+        console.log(error.response.data.errors);
+      }.bind(this));
+    },
+    replyToComment: function(id) {
+      var reply = document.getElementById(id);
+      this.setDisplay(reply);
+      // var viewReply = document.getElementById(id + 'view');
+      // this.setDisplay(viewReply);
+      var comment = document.getElementById(id + 'comment');
       this.setDisplay(comment);
     },
     setDisplay: function(div) {
@@ -339,7 +412,7 @@ var AdminSignupPage = {
           // when creation successful, create firebase account so only logged in can upload files
           firebase.auth().createUserWithEmailAndPassword(params.email, params.password).then(function(response) {
             // successful account creation
-            router.push('/login/admin/' + params.email + "/" + params.password);
+            router.push('/admin/login/' + params.email + "/" + params.password);
 
           }).catch(function(error) {
             // if didnt work?
@@ -467,13 +540,14 @@ var router = new VueRouter({
   routes: [
     { path: "/", component: HomePage },
     { path: "/podcasts/:id", component: PodcastShowPage },
+    { path: "/comments/:id/:podcastId", component: CommentsShowPage },
     { path: "/create/podcasts", component: PodcastCreatePage },
     // singup pages
     {path: "/signup", component: SignupPage},
-    {path: "/signup/admin/:id", component: AdminSignupPage},
+    {path: "/admin/signup/:id", component: AdminSignupPage},
     // logins for admins
-    {path: "/login/admin", component: AdminLoginPage},
-    {path: "/login/admin/:email/:password", component: AdminLoginPage},
+    {path: "/admin/login", component: AdminLoginPage},
+    {path: "/admin/login/:email/:password", component: AdminLoginPage},
     // logins for users
     {path: "/login", component: LoginPage},
     {path: "/login/:email/:password", component: LoginPage},
