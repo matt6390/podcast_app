@@ -11,7 +11,7 @@ class AdminsController < ApplicationController
       @admin = current_admin
       render "show.json.jbuilder"
     else
-      render json: {errors: "Not an admin"}, status: :bad_request
+      render json: {errors: "Not an admin"}, status: :unauthorized
     end 
   end
 
@@ -31,7 +31,7 @@ class AdminsController < ApplicationController
       end
       # if not authorized
     else
-      render json: {errors: ["Not Authorized"]}, status: :bad_request
+      render json: {errors: ["Not Authorized"]}, status: :unauthorized
     end
     # end of function
   end

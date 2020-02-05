@@ -120,17 +120,22 @@ var CommentsShowPage = {
       message: "Comments Show Page",
       id: this.$route.params.id,
       podcastId: this.$route.params.podcastId,
+      sumpin: this.$route.params.sumpin,
       comment: null,
       replyComment: ''
     };
   },
   created: function() {
-    // axios.get("/comments/" + this.id).then(function(response) {
-    //   console.log(response.data);
-    //   this.comment = response.data;
-    // }.bind(this)).catch(function(error) {
-    //   console.log(error);
-    // }.bind(this));
+    axios.get("/comments/" + this.id).then(function(response) {
+      axios.get("admins/current").then(function(response) {
+        var createPodcast = document.getElementById('createPodcast');
+        createPodcast.innerHTML = '<a href="/#/create/podcasts" class="nav-link" id="pages-drop" data-toggle="dropdown" data-hover="dropdown">Create Podcasts</a>';
+      }.bind(this)).catch(function(errors) {
+      }.bind(this));
+      this.comment = response.data;
+    }.bind(this)).catch(function(error) {
+      console.log(error);
+    }.bind(this));
   },
   mounted: function() {
     axios.get("/comments/" + this.id).then(function(response) {
@@ -154,6 +159,14 @@ var CommentsShowPage = {
       }.bind(this)).catch(function(error) {
         console.log(error.response.data.errors);
       }.bind(this));
+    },
+
+    ifSumpin: function() {
+      if (this.sumpin === "sumpin") {
+        return "notsumpin";
+      } else {
+        return "sumpin";
+      }
     },
     createCommentComments: function(commentId) {
       var params = { body: this.replyComment, commentable_id: commentId, commentable_type: "Comment"};
@@ -389,7 +402,8 @@ var AdminSignupPage = {
   data: function() {
     return {
       id: this.$route.params.id,
-      name: "",
+      f_n: "",
+      l_n: "",
       email: "",
       password: "",
       passwordConfirmation: "",
@@ -400,7 +414,7 @@ var AdminSignupPage = {
     submit: function() {
       var params = {
         id: this.id,
-        name: this.name,
+        name: this.f_n + " " + this.l_n,
         email: this.email,
         password: this.password,
         password_confirmation: this.passwordConfirmation
@@ -412,15 +426,30 @@ var AdminSignupPage = {
           // when creation successful, create firebase account so only logged in can upload files
           firebase.auth().createUserWithEmailAndPassword(params.email, params.password).then(function(response) {
             // successful account creation
-            router.push('/admin/login/' + params.email + "/" + params.password);
+            // create a user account as well with the same email and password
+            var newParams = {
+              id: this.id,
+              f_n: this.f_n,
+              l_n: this.l_n,
+              email: this.email,
+              password: this.password,
+              password_confirmation: this.passwordConfirmation
+            };
+            axios.post("/users", newParams).then(function(response) {
+              // created a user as well, but log in as admin
+              router.push('/admin/login/' + params.email + "/" + params.password);
+            }.bind(this)).catch(function(error) {
+              console.log(error.response.data.errors);
+            }.bind(this));
 
-          }).catch(function(error) {
+
+          }.bind(this)).catch(function(error) {
             // if didnt work?
             var errorCode = error.code;
             this.errors = error.message;
             console.log(error.message);
-          });
-        })
+          }.bind(this));
+        }.bind(this))
         .catch(
           // when initial client account is unsuccessful
           function(error) {
@@ -540,7 +569,7 @@ var router = new VueRouter({
   routes: [
     { path: "/", component: HomePage },
     { path: "/podcasts/:id", component: PodcastShowPage },
-    { path: "/comments/:id/:podcastId", component: CommentsShowPage },
+    { path: "/comments/:id/:podcastId/:sumpin", component: CommentsShowPage },
     { path: "/create/podcasts", component: PodcastCreatePage },
     // singup pages
     {path: "/signup", component: SignupPage},

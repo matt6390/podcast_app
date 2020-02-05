@@ -34,7 +34,7 @@ class PodcastsController < ApplicationController
       end
       
     else #not logged in as an admin  
-      render json: {error: "Admin must be logged in"}, status: :bad_request
+      render json: {error: "Admin must be logged in"}, status: :unauthorized
     end
   end
 

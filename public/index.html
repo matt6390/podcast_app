@@ -203,7 +203,7 @@
     <div class="container">
       <h1>{{ message }}</h1>
       <div class="row">
-        <div v-for="podcast in podcasts" v-if="podcast.format === 'video'" class="col-md-4">
+        <div v-if="podcasts" v-for="podcast in podcasts" v-if="podcast.format === 'video'" class="col-md-4">
           <div class="card">
             <a v-bind:href="'#/podcasts/' + podcast.id">
               <div class="bg-shadow">
@@ -268,7 +268,8 @@
                 <div id="replyBox">
                   <!-- Buttons to reply, and view replies -->
                   <small v-bind:id="comment.id" class="text-center"><button class="mb-1 btn btn-sm btn-outline-blue" v-on:click="replyToComment(comment.id)">Reply</button></small>
-                  <small v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="replyPage(comment.id)">View Replies</button></small>
+                  <small v-if="comment.seeded_comments" v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm" v-on:click="replyPage(comment.id)">View Replies</button></small>
+                  <small v-else v-bind:id="comment.id + 'view'" class="text-center"><button class="btn mb-1 btn-outline-secondary btn-sm">No Replies Yet</button></small>
 
                   <!-- Reply to Comments -->
                   <div v-bind:id="comment.id + 'comment'" style="display: none;">
@@ -279,6 +280,9 @@
                 </div>
                 <span class="comment-border badge badge-secondary badge-pill float-right">{{comment.friendly_created_at}}</span>
               </li>
+          </ul>
+          <ul v-else class="list-group">
+            <p>No comments yet. Page will reload when first comment is posted</p>
           </ul>
         </div>
       </div>
@@ -402,8 +406,12 @@
         <li class="text-danger" v-for="error in errors">{{ error }}</li>
       </ul>
       <div class="form-group">
-        <label>Name:</label> 
-        <input type="text" class="form-control" v-model="name">
+        <label>
+          First Name: <input type="text" class="form-control" v-model="f_n">
+        </label> 
+        <label>
+          Last Name: <input type="text" class="form-control" v-model="l_n">
+        </label> 
       </div>
       <div class="form-group">
         <label>Email:</label>
@@ -454,10 +462,12 @@
         <li class="text-danger" v-for="error in errors">{{ error }}</li>
       </ul>
       <div class="form-group">
-        <label>First Name:</label> 
-        <input type="text" class="form-control" v-model="f_n">
-        <label>Last Name:</label> 
-        <input type="text" class="form-control" v-model="l_n">
+        <label>
+          First Name: <input type="text" class="form-control" v-model="f_n">
+        </label> 
+        <label>
+          Last Name: <input type="text" class="form-control" v-model="l_n">
+        </label>
       </div>
       <div class="form-group">
         <label>Email:</label>
