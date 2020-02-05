@@ -2,8 +2,7 @@ var HomePage = {
   template: "#home-page",
   data: function() {
     return {
-      message: "Welcome to RodCasts!",
-      podcasts: [],
+      podcasts: null,
       admin: null,
       errors:[]
     };
@@ -17,9 +16,7 @@ var HomePage = {
         createPodcast.innerHTML = '<a href="/#/create/podcasts" class="nav-link" id="pages-drop" data-toggle="dropdown" data-hover="dropdown">Create Podcasts</a>';
       }.bind(this)).catch(function(errors) {
       }.bind(this));
-      response.data.forEach(function(podcast) {
-        this.podcasts.push(podcast);
-      }.bind(this));
+      this.podcasts = response.data;
     }.bind(this)).catch(function(error) {
       // pop errors if errors
       this.errors.push(error.response.data.errors);
