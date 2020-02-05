@@ -11,7 +11,7 @@ class AdminsController < ApplicationController
       @admin = current_admin
       render "show.json.jbuilder"
     else
-      render json: {errors: "Not an admin"}, status: :unauthorized
+      render json: {errors: ["Not an admin"]}, status: :unauthorized
     end 
   end
 
@@ -36,5 +36,24 @@ class AdminsController < ApplicationController
     # end of function
   end
 
+  def update
+    @admin = current_admin
 
+    @admin.name = params[:name] || @admin.name
+    @admin.email = params[:email] || @admin.email
+    @admin.password = params[:password] || @admin.password
+    @admin.password_confirmation = params[:password_confirmation] || @admin.password_confirmation
+
+    if @admin.save
+      render "show.json.jbuilder"
+    else
+      render jeson: {errors: @admin.errors.full_messages}, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @admin = Admin.find(params[:id])
+    @admin.delete
+    render json: {message: "Admin Deleted from record"}
+  end
 end

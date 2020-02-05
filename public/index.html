@@ -431,6 +431,43 @@
   </div>
 </template>
 
+<template id="admin-update-page">
+  <div class="vue-component">
+    <div class="container">
+      <h1>{{message}}</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <!-- admin errors -->
+          <ul>
+            <li class="text-danger" v-for="error in errors">{{ error }}</li>
+          </ul>
+          
+          <div class="form-group">
+            <label>
+              Name: <input type="text" class="form-control" v-model="name">
+            </label> 
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" class="form-control" v-model="email">
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <input type="password" class="form-control" v-model="password" placeholder="Enter new password...">
+          </div>
+          <div class="form-group">
+            <label>Password confirmation:</label>
+            <input type="password" class="form-control" v-model="passwordConfirmation" placeholder="Enter new password..." >
+          </div>
+          <button class="btn btn-secondary" v-on:click="submit()">Submit</button>
+        </div>
+        <div class="col-md-6"></div>
+      </div>
+
+    </div>
+  </div>
+</template>
+
 <template id="login-page">
   <div class="vue-component">
 

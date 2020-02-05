@@ -29,8 +29,8 @@ class UsersController < ApplicationController
   def update
     @user = current_user
 
-    @user.f_n = params[:f_n] || @user.f_name
-    @user.l_n = params[:l_n] || @user.l_name
+    @user.f_n = params[:f_n] || @user.f_n
+    @user.l_n = params[:l_n] || @user.l_n
     @user.email = params[:email] || @user.email
 
     @user.password = params[:password] || @user.password

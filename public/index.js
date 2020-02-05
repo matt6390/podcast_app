@@ -460,6 +460,46 @@ var AdminSignupPage = {
   }
 };
 
+var AdminUpdatePage = {
+  template: "#admin-update-page",
+  data: function() {
+    return {
+      message: "Admin Update Page",
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+      admin: null,
+      errors: []
+    };
+  },
+  created: function() {
+    axios.get("/admins/current").then(function(response) {
+      this.admin = response.data;
+      this.name = response.data.name;
+      this.email = response.data.email;
+    }.bind(this)).catch(function(error) {
+      this.errors = error.response.data.errors;
+    }.bind(this));
+  },
+  methods: {
+    submit: function() {
+      var params = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.passwordConfirmation
+      };
+      axios.patch("/admins/" + this.admin.id, params).then(function(response) {
+        // update firebase password for user
+
+      }.bind(this)).catch(function(error) {
+        console.log(error);
+      }.bind(this));
+    }
+  }
+};
+
 var LoginPage = {
   template: "#login-page",
   data: function() {
@@ -577,6 +617,8 @@ var router = new VueRouter({
     // logins for admins
     {path: "/admin/login", component: AdminLoginPage},
     {path: "/admin/login/:email/:password", component: AdminLoginPage},
+    // update pages
+    {path: "/admin/update", component: AdminUpdatePage},
     // logins for users
     {path: "/login", component: LoginPage},
     {path: "/login/:email/:password", component: LoginPage},
